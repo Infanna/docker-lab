@@ -1,0 +1,12 @@
+# FROM node:20.18.2-alpine as base-angular
+# WORKDIR /app
+# COPY package.json package-lock.json ./
+# RUN npm install
+FROM angular:appbase as base-angular
+
+FROM base-angular as builder
+COPY . .
+RUN npm run build
+
+FROM nginx:alpine
+COPY --from=builder /app/dist/my-angular/browser /usr/share/nginx/html
